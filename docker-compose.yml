@@ -1,0 +1,11 @@
+services:
+  devops-build-app:
+    container_name: devops-react-app
+
+    image: devops-build-app:v1
+
+    ports:
+      - "80:80"
+
+    restart: unless-stopped
+
