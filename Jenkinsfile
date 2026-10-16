@@ -29,32 +29,25 @@ pipeline {
             steps {
                 script {
                                 
-                     sh 'git branch'
-
-                     def branch = sh(
-                         script: "git rev-parse --abbrev-ref HEAD",
-                         returnStdout: true
-                    ).trim()
-
-                    echo "Current Branch = ${branch}"
+                    echo "Branch Name = ${env.BRANCH_NAME}"
                           
-                    if(branch == 'dev') {
+                    if(env.BRANCH_NAME == "dev") {
 
                         sh '''
                         docker tag devops-build-app:${BUILD_NUMBER} sivakumar1207/dev:${BUILD_NUMBER}
                         docker push sivakumar1207/dev:${BUILD_NUMBER}
                         '''
 
-                        echo 'Image Pushed to Dev repo'
+                        echo "Image Pushed to Dev repo"
 
-                    } else if(branch == 'master') {
+                    } else if(env.BRANCH_NAME == "master") {
 
                         sh '''
                         docker tag devops-build-app:${BUILD_NUMBER} sivakumar1207/prod:${BUILD_NUMBER}
                         docker push sivakumar1207/prod:${BUILD_NUMBER}
                         '''
 
-                        echo 'Image Pushed to Prod repo'
+                        echo "Image Pushed to Prod repo"
 
                     }
                 }
