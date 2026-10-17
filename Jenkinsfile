@@ -28,39 +28,40 @@ pipeline {
         stage('Push Image') {
             steps {
                 script {
-                                
+
                     echo "Branch Name = ${env.BRANCH_NAME}"
-                          
-                    if(env.BRANCH_NAME == "dev") {
+
+                    if (env.BRANCH_NAME == "dev") {
 
                         sh '''
                         docker tag devops-build-app:${BUILD_NUMBER} sivakumar1207/dev:${BUILD_NUMBER}
                         docker push sivakumar1207/dev:${BUILD_NUMBER}
                         '''
 
-                        echo "Image Pushed to Dev repo"
+                        echo 'Image pushed to DEV repo'
 
-                    } else if(env.BRANCH_NAME == "master") {
+                    } else if (env.BRANCH_NAME == "master") {
 
                         sh '''
                         docker tag devops-build-app:${BUILD_NUMBER} sivakumar1207/prod:${BUILD_NUMBER}
                         docker push sivakumar1207/prod:${BUILD_NUMBER}
                         '''
 
-                        echo "Image Pushed to Prod repo"
-
+                        echo 'Image pushed to PROD repo'
                     }
                 }
+            }
+        }
 
-         stage('Deploy to Production') {
-            
+        stage('Deploy to Production') {
+
             when {
                 branch 'master'
             }
 
             steps {
 
-               sshagent(['prod-server-key']) {
+                sshagent(['prod-server-key']) {
 
                     sh '''
                     ssh -o StrictHostKeyChecking=no ubuntu@18.61.69.224 "
@@ -81,8 +82,6 @@ pipeline {
             }
         }
     }
-}             
-           
-        
+}        
     
 
