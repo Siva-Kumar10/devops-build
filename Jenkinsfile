@@ -51,7 +51,38 @@ pipeline {
 
                     }
                 }
+
+         stage('Deploy to Production') {
+            
+            when {
+                branch 'master'
+            }
+
+            steps {
+
+               sshagent(['prod-server-key']) {
+
+                    sh '''
+                    ssh -o StrictHostKeyChecking=no ubuntu@18.61.69.224 "
+
+                    docker pull sivakumar1207/prod:${BUILD_NUMBER}
+
+                    docker stop react-app || true
+                    docker rm react-app || true
+
+                    docker run -d \
+                    --name react-app \
+                    -p 80:80 \
+                    sivakumar1207/prod:${BUILD_NUMBER}
+
+                    "
+                    '''
+                }
             }
         }
     }
-}
+}             
+           
+        
+    
+
